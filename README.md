@@ -1,3 +1,29 @@
+# ProteinVisualizer
+
+ProteinVisualizer is a React Native application built with Expo that allows users to fetch and visualize protein structure data from the PDB database. The application provides detailed information about the protein, including its ID, molecular weight. Users can also download the PDB data locally.
+
+## Features
+
+- Fetch protein data from the PDB database using a PDB ID.
+- Display detailed protein information, including compound structure data, molecular weight, and experimental details.
+- Download PDB data locally to the device.
+
+## Screenshots
+
+![screenshot1](path_to_screenshot1.png)
+![alt text](image.png)
+![screenshot2](path_to_screenshot2.png)
+![alt text](image-1.png)
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/ProteinVisualizer.git
+   cd ProteinVisualizer
+   ```
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
