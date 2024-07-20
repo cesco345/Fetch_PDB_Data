@@ -10,9 +10,8 @@ ProteinVisualizer is a React Native application built with Expo that allows user
 
 ## Screenshots
 
-![screenshot1](path_to_screenshot1.png)
 ![alt text](image.png)
-![screenshot2](path_to_screenshot2.png)
+
 ![alt text](image-1.png)
 
 ## Installation
