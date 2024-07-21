@@ -6,6 +6,19 @@ interface ProteinData {
   molecularWeight: string;
   structure: string;
   score: string;
+  header: string;
+  title: string;
+  compound: string;
+  source: string;
+  method: string;
+  resolution: string;
+  authors: string;
+  chains: string;
+  residueNumbering: string;
+  heteroatoms: string;
+  remark3: string;
+  remark200: string;
+  dbReference: string;
 }
 
 const getProteinData = async (id: string): Promise<ProteinData> => {
@@ -17,29 +30,36 @@ const getProteinData = async (id: string): Promise<ProteinData> => {
       }
     );
     const data = response.data;
-    console.log("API response data:", JSON.stringify(data, null, 2)); // Log the full response data
-
-    const molecularWeight =
-      data.rcsb_entry_info?.polymer_molecular_weight_maximum ?? "N/A";
-    const structureData = "3D structure data"; // Placeholder, you may need to fetch the actual structure file separately
 
     const proteinData: ProteinData = {
       id: data.rcsb_id,
       name: data.struct.title,
-      molecularWeight: `${molecularWeight} Da`,
-      structure: structureData,
+      molecularWeight: `${
+        data.rcsb_entry_info?.polymer_molecular_weight_maximum ?? "N/A"
+      } Da`,
+      structure: "3D structure data", // Placeholder, you may need to fetch the actual structure file separately
       score: "N/A",
+      header: data.header ?? "N/A",
+      title: data.struct.title ?? "N/A",
+      compound: data.struct.compound ?? "N/A",
+      source: data.struct.source ?? "N/A",
+      method: data.exptl?.[0]?.method ?? "N/A",
+      resolution: `${data.rcsb_entry_info.resolution_combined?.[0] ?? "N/A"} Å`,
+      authors:
+        data.audit_author?.map((author: any) => author.name).join(", ") ??
+        "N/A",
+      chains: data.struct_ref?.[0]?.db_code ?? "N/A",
+      residueNumbering:
+        data.entity_poly?.[0]?.pdbx_seq_one_letter_code_can ?? "N/A",
+      heteroatoms: data.chem_comp?.[0]?.name ?? "N/A",
+      remark3: data.remark_3 ?? "N/A",
+      remark200: data.remark_200 ?? "N/A",
+      dbReference: data.struct_ref?.[0]?.db_name ?? "N/A",
     };
+
     return proteinData;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        "Error fetching protein data:",
-        error.response?.data || error.message
-      );
-    } else {
-      console.error("Unexpected error:", error);
-    }
+  } catch (error) {
+    console.error("Error fetching protein data:", error);
     throw error;
   }
 };

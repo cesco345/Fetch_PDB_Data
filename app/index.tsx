@@ -1,9 +1,20 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import ThreeDViewer from "./components/ThreeDViewer";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  ScrollView,
+  Alert,
+} from "react-native";
 import ProteinVisualizer from "./components/ProteinVisualizer";
+import ThreeDViewer from "./components/ThreeDViewer";
 import getProteinData, { ProteinData } from "./services/proteinService";
-import { getProteinStructure } from "./services/structureService";
+import {
+  getProteinStructure,
+  downloadAndSharePDBFile,
+} from "./services/structureService";
 import axios from "axios";
 
 const App: React.FC = () => {
@@ -24,11 +35,9 @@ const App: React.FC = () => {
 
     try {
       const data = await getProteinData(proteinID);
-      console.log("Fetched protein data:", data);
       setProteinData(data);
 
       const structure = await getProteinStructure(proteinID);
-      console.log("Fetched structure data:", structure); // Log the structure data
       setStructureData(structure);
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -44,7 +53,15 @@ const App: React.FC = () => {
       } else {
         setError("Unexpected error occurred.");
       }
-      console.error("Error:", err);
+    }
+  };
+
+  const handleDownloadAndSharePDBFile = async () => {
+    try {
+      await downloadAndSharePDBFile(proteinID);
+      Alert.alert("Success", "PDB file shared successfully.");
+    } catch (err) {
+      Alert.alert("Error", `Error sharing PDB file: ${err}`);
     }
   };
 
@@ -57,18 +74,35 @@ const App: React.FC = () => {
         onChangeText={setProteinID}
       />
       <Button title="Fetch Protein Data" onPress={fetchProteinData} />
+      <Button
+        title="Download and Share PDB File"
+        onPress={handleDownloadAndSharePDBFile}
+      />
       {error && <Text style={styles.error}>{error}</Text>}
-      {proteinData && (
-        <View style={styles.details}>
+      <ScrollView>
+        {proteinData && (
           <ProteinVisualizer
             id={proteinData.id}
             name={proteinData.name}
             molecularWeight={proteinData.molecularWeight}
             score={proteinData.score}
+            header={proteinData.header}
+            title={proteinData.title}
+            compound={proteinData.compound}
+            source={proteinData.source}
+            method={proteinData.method}
+            resolution={proteinData.resolution}
+            authors={proteinData.authors}
+            chains={proteinData.chains}
+            residueNumbering={proteinData.residueNumbering}
+            heteroatoms={proteinData.heteroatoms}
+            remark3={proteinData.remark3}
+            remark200={proteinData.remark200}
+            dbReference={proteinData.dbReference}
           />
-          {structureData && <ThreeDViewer structureData={structureData} />}
-        </View>
-      )}
+        )}
+        {structureData && <ThreeDViewer structureData={structureData} />}
+      </ScrollView>
     </View>
   );
 };
